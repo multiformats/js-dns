@@ -7,7 +7,8 @@ import { CustomProgressEvent } from 'progress-events'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 import { RecordType } from '../index.js'
 import { toDNSResponse } from '../utils/to-dns-response.js'
-import type { DNSResolver, DNSResponse } from '../index.js'
+import type { DNSResolver } from './index.js'
+import type { DNSResponse } from '../index.js'
 
 /**
  * Browsers limit concurrent connections per host (~6), we don't want to exhaust

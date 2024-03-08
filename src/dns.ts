@@ -1,7 +1,9 @@
 import { CustomProgressEvent } from 'progress-events'
 import { defaultResolver } from './resolvers/default.js'
 import { cache } from './utils/cache.js'
-import { type DNS as DNSInterface, type DNSInit, type DNSResolver, type DNSResponse, type QueryOptions, RecordType } from './index.js'
+import { RecordType } from './index.js'
+import type { DNS as DNSInterface, DNSInit, DNSResponse, QueryOptions } from './index.js'
+import type { DNSResolver } from './resolvers/index.js'
 
 export class DNS implements DNSInterface {
   private resolvers: Record<string, DNSResolver[]>

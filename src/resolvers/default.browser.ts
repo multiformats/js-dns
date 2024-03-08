@@ -1,5 +1,5 @@
 import { dnsJsonOverHttps } from './dns-json-over-https.js'
-import type { DNSResolver } from '../index.js'
+import type { DNSResolver } from './index.js'
 
 export function defaultResolver (): DNSResolver[] {
   return [

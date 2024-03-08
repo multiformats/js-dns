@@ -81,6 +81,7 @@
  */
 
 import { DNS as DNSClass } from './dns.js'
+import type { DNSResolver } from './resolvers/index.js'
 import type { ProgressEvent, ProgressOptions } from 'progress-events'
 
 /**
@@ -212,10 +213,6 @@ export type ResolveDnsProgressEvents =
   ProgressEvent<'dns:query', string> |
   ProgressEvent<'dns:response', DNSResponse> |
   ProgressEvent<'dns:error', Error>
-
-export interface DNSResolver {
-  (domain: string, types: RecordType[], options?: QueryOptions): Promise<DNSResponse>
-}
 
 export interface DNSInit {
   resolvers?: Record<string, DNSResolver | DNSResolver[]>
