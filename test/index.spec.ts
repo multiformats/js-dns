@@ -140,4 +140,47 @@ describe('dns', () => {
 
     expect(defaultResolver.callCount).to.equal(1)
   })
+
+  it('should stop resolving if the user aborts the request', async () => {
+    const error = new Error('Aborted!')
+    const controller = new AbortController()
+    const fake = (): void => {
+      controller.abort()
+
+      throw error
+    }
+    const resolvers = [
+      Sinon.stub().callsFake(fake),
+      Sinon.stub().callsFake(fake),
+      Sinon.stub().callsFake(fake)
+    ]
+
+    const resolver = dns({
+      resolvers: {
+        '.': resolvers
+      }
+    })
+    const result = resolver.query('test-abort-stops-resolving.com', {
+      signal: controller.signal
+    })
+
+    await expect(result).to.eventually.be.rejectedWith(error)
+
+    // resolvers are shuffled so we have to sort them
+    resolvers.sort((a, b) => {
+      if (a.callCount > b.callCount) {
+        return -1
+      }
+
+      if (a.callCount < b.callCount) {
+        return 1
+      }
+
+      return 0
+    })
+
+    expect(resolvers[0].callCount).to.equal(1)
+    expect(resolvers[1].called).to.be.false()
+    expect(resolvers[2].called).to.be.false()
+  })
 })

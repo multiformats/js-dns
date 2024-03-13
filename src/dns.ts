@@ -56,6 +56,11 @@ export class DNS implements DNSInterface {
     const errors: Error[] = []
 
     for (const resolver of resolvers) {
+      // skip further resolutions if the user aborted the signal
+      if (options.signal?.aborted === true) {
+        break
+      }
+
       try {
         const result = await resolver(domain, {
           ...options,
