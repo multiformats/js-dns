@@ -166,21 +166,7 @@ describe('dns', () => {
 
     await expect(result).to.eventually.be.rejectedWith(error)
 
-    // resolvers are shuffled so we have to sort them
-    resolvers.sort((a, b) => {
-      if (a.callCount > b.callCount) {
-        return -1
-      }
-
-      if (a.callCount < b.callCount) {
-        return 1
-      }
-
-      return 0
-    })
-
-    expect(resolvers[0].callCount).to.equal(1)
-    expect(resolvers[1].called).to.be.false()
-    expect(resolvers[2].called).to.be.false()
+    // only one resolver should have been called
+    expect(resolvers.reduce((acc, curr) => acc + curr.callCount, 0)).to.equal(1)
   })
 })
