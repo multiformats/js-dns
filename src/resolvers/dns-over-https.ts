@@ -6,6 +6,7 @@ import PQueue from 'p-queue'
 import { CustomProgressEvent } from 'progress-events'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 import { RecordType } from '../index.js'
+import { getTypes } from '../utils/get-types.js'
 import { toDNSResponse } from '../utils/to-dns-response.js'
 import type { DNSResolver } from './index.js'
 import type { DNSResponse } from '../index.js'
@@ -19,6 +20,26 @@ export const DEFAULT_QUERY_CONCURRENCY = 4
 
 export interface DNSOverHTTPSOptions {
   queryConcurrency?: number
+}
+
+function toType (type: RecordType): 'A' | 'AAAA' | 'TXT' | 'CNAME' {
+  if (type === RecordType.A) {
+    return 'A'
+  }
+
+  if (type === RecordType.AAAA) {
+    return 'AAAA'
+  }
+
+  if (type === RecordType.TXT) {
+    return 'TXT'
+  }
+
+  if (type === RecordType.CNAME) {
+    return 'CNAME'
+  }
+
+  throw new Error('Unsupported DNS record type')
 }
 
 /**
@@ -39,14 +60,15 @@ export function dnsOverHttps (url: string, init: DNSOverHTTPSOptions = {}): DNSR
     concurrency: init.queryConcurrency ?? DEFAULT_QUERY_CONCURRENCY
   })
 
-  return async (fqdn, types, options = {}) => {
+  return async (fqdn, options = {}) => {
+    const types = getTypes(options.types)
+
     const dnsQuery = dnsPacket.encode({
       type: 'query',
       id: 0,
       flags: dnsPacket.RECURSION_DESIRED,
-      // @ts-expect-error type types are incompatible
       questions: types.map(type => ({
-        type: RecordType[type],
+        type: toType(type),
         name: fqdn
       }))
     })

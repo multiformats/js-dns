@@ -1,7 +1,7 @@
 import { CustomProgressEvent } from 'progress-events'
 import { defaultResolver } from './resolvers/default.js'
 import { cache } from './utils/cache.js'
-import { RecordType } from './index.js'
+import { getTypes } from './utils/get-types.js'
 import type { DNS as DNSInterface, DNSInit, DNSResponse, QueryOptions } from './index.js'
 import type { DNSResolver } from './resolvers/index.js'
 
@@ -39,18 +39,7 @@ export class DNS implements DNSInterface {
    * Any new responses will be added to the cache for subsequent requests.
    */
   async query (domain: string, options: QueryOptions = {}): Promise<DNSResponse> {
-    const types: RecordType[] = []
-
-    if (options.types != null) {
-      if (Array.isArray(options.types)) {
-        types.push(...options.types)
-      } else {
-        types.push(options.types)
-      }
-    } else {
-      types.push(RecordType.A, RecordType.AAAA)
-    }
-
+    const types = getTypes(options.types)
     const cached = options.cached !== false ? cache.get(domain, types) : undefined
 
     if (cached != null) {
@@ -68,7 +57,10 @@ export class DNS implements DNSInterface {
 
     for (const resolver of resolvers) {
       try {
-        const result = await resolver(domain, Array.isArray(types) ? types : [types], options)
+        const result = await resolver(domain, {
+          ...options,
+          types
+        })
 
         for (const answer of result.Answer) {
           cache.add(domain, answer)

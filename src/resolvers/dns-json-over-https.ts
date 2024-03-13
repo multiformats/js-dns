@@ -2,6 +2,7 @@
 
 import PQueue from 'p-queue'
 import { CustomProgressEvent } from 'progress-events'
+import { getTypes } from '../utils/get-types.js'
 import { toDNSResponse } from '../utils/to-dns-response.js'
 import type { DNSResolver } from './index.js'
 import type { DNSResponse } from '../index.js'
@@ -37,11 +38,11 @@ export function dnsJsonOverHttps (url: string, init: DNSJSONOverHTTPSOptions = {
     concurrency: init.queryConcurrency ?? DEFAULT_QUERY_CONCURRENCY
   })
 
-  return async (fqdn, types, options = {}) => {
+  return async (fqdn, options = {}) => {
     const searchParams = new URLSearchParams()
     searchParams.set('name', fqdn)
 
-    types.forEach(type => {
+    getTypes(options.types).forEach(type => {
       searchParams.append('type', type.toString())
     })
 

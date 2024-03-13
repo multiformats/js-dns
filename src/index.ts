@@ -214,8 +214,10 @@ export type ResolveDnsProgressEvents =
   ProgressEvent<'dns:response', DNSResponse> |
   ProgressEvent<'dns:error', Error>
 
+export type DNSResolvers = Record<string, DNSResolver | DNSResolver[]>
+
 export interface DNSInit {
-  resolvers?: Record<string, DNSResolver | DNSResolver[]>
+  resolvers?: DNSResolvers
 }
 
 export function dns (init: DNSInit = {}): DNS {
