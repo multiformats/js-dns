@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/multiformats/js-dns/compare/v1.0.2...v1.0.3) (2024-03-13)
+
+
+### Bug Fixes
+
+* stop resolving on signal abort ([#2](https://github.com/multiformats/js-dns/issues/2)) ([ea39509](https://github.com/multiformats/js-dns/commit/ea3950967dca7a84442388419eb26a0ac1db8fe6))
+
 ## [1.0.2](https://github.com/multiformats/js-dns/compare/v1.0.1...v1.0.2) (2024-03-13)
 
 
