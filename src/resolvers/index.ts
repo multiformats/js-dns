@@ -1,7 +1,7 @@
-import type { DNSResponse, QueryOptions, RecordType } from '../index.js'
+import type { DNSResponse, QueryOptions } from '../index.js'
 
 export interface DNSResolver {
-  (domain: string, types: RecordType[], options?: QueryOptions): Promise<DNSResponse>
+  (domain: string, options?: QueryOptions): Promise<DNSResponse>
 }
 
 export { dnsOverHttps } from './dns-over-https.js'

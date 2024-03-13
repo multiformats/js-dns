@@ -107,4 +107,37 @@ describe('dns', () => {
 
     expect(defaultResolver.callCount).to.equal(4)
   })
+
+  it('should return enums from cache', async () => {
+    const defaultResolver = Sinon.stub()
+
+    const answerA = {
+      name: 'example-enum-cache.com',
+      data: '123.123.123.123',
+      type: RecordType.A
+    }
+    const answerAAAA = {
+      name: 'example-enum-cache.com',
+      data: ':::1',
+      type: RecordType.AAAA
+    }
+
+    defaultResolver.withArgs('example-enum-cache.com').resolves({
+      Answer: [answerA, answerAAAA]
+    })
+
+    const resolver = dns({
+      resolvers: {
+        '.': defaultResolver
+      }
+    })
+
+    const res1 = await resolver.query('example-enum-cache.com')
+    expect(res1).to.have.nested.property('Answer[0].type', RecordType.A)
+
+    const res2 = await resolver.query('example-enum-cache.com')
+    expect(res2).to.have.nested.property('Answer[0].type', RecordType.A)
+
+    expect(defaultResolver.callCount).to.equal(1)
+  })
 })

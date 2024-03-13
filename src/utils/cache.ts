@@ -1,6 +1,7 @@
 import hashlru from 'hashlru'
+import { RecordType } from '../index.js'
 import { DEFAULT_TTL, toDNSResponse } from './to-dns-response.js'
-import type { Answer, DNSResponse, RecordType } from '../index.js'
+import type { Answer, DNSResponse } from '../index.js'
 
 interface CachedAnswer {
   expires: number
@@ -48,12 +49,17 @@ export class AnswerCache {
         .filter((entry) => {
           return entry.expires > Date.now()
         })
-        .map(({ value }) => value)
+        .map(({ value }) => ({
+          ...value,
+          type: RecordType[value.type]
+        }))
 
       if (cachedAnswers.length === 0) {
         this.lru.remove(key)
       }
 
+      // @ts-expect-error hashlru stringifies stored types which turns enums
+      // into strings, we convert back into enums above but tsc doesn't know
       return cachedAnswers
     }
 
