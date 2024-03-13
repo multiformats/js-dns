@@ -34,7 +34,7 @@ import { dns } from '@multiformats/dns'
 
 const resolver = dns()
 
-// resolve A and AAAA records with a 5s timeout
+// resolve A records with a 5s timeout
 const result = await dns.query('google.com', {
   signal: AbortSignal.timeout(5000)
 })
@@ -70,13 +70,17 @@ import { dns, RecordType } from '@multiformats/dns'
 
 const resolver = dns()
 
-// resolve only TXT records
+// resolve TXT records
 const result = await dns.query('google.com', {
   types: [
     RecordType.TXT
   ]
 })
 ```
+
+N.b if multiple record types are specified, most resolvers will throw if answers
+are not available for all of them, so if you consider some record types optional
+it's better to make multiple queries.
 
 ## Caching
 
