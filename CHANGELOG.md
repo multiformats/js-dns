@@ -1,3 +1,15 @@
+## [1.0.2](https://github.com/multiformats/js-dns/compare/v1.0.1...v1.0.2) (2024-03-13)
+
+
+### Bug Fixes
+
+* restore answer type from cache as enum ([#1](https://github.com/multiformats/js-dns/issues/1)) ([dd983d1](https://github.com/multiformats/js-dns/commit/dd983d1ab135ac4376343e5bd3f798f14f4c7af7))
+
+
+### Documentation
+
+* update readme ([33deadc](https://github.com/multiformats/js-dns/commit/33deadcb3f9ff01ba2d9323cd05519c77ab99761))
+
 ## [1.0.1](https://github.com/multiformats/js-dns/compare/v1.0.0...v1.0.1) (2024-03-08)
 
 
