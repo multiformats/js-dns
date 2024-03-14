@@ -69,6 +69,37 @@ describe('dns', () => {
     expect(defaultResolver.calledOnce).to.be.true()
   })
 
+  it('should use separate caches', async () => {
+    const defaultResolver = Sinon.stub()
+
+    const answerA = {
+      name: 'another.com',
+      data: '123.123.123.123',
+      type: RecordType.A
+    }
+
+    defaultResolver.withArgs('another.com').resolves({
+      Answer: [answerA]
+    })
+
+    const resolverA = dns({
+      resolvers: {
+        '.': defaultResolver
+      }
+    })
+    const resolverB = dns({
+      resolvers: {
+        '.': defaultResolver
+      }
+    })
+    await resolverA.query('another.com')
+    await resolverA.query('another.com')
+    await resolverB.query('another.com')
+    await resolverB.query('another.com')
+
+    expect(defaultResolver.calledTwice).to.be.true()
+  })
+
   it('should ignore cache results', async () => {
     const defaultResolver = Sinon.stub()
 

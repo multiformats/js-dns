@@ -51,7 +51,8 @@ const resolver = dns({
     // will only be used to resolve `.com` addresses
     'com.': dnsJsonOverHttps('https://cloudflare-dns.com/dns-query'),
 
-    // this can also be an array, resolvers will be tried in series
+    // this can also be an array, resolvers will be shuffled and tried in
+    // series
     'net.': [
       dnsJsonOverHttps('https://dns.google/resolve'),
       dnsJsonOverHttps('https://dns.pub/dns-query')
@@ -70,17 +71,13 @@ import { dns, RecordType } from '@multiformats/dns'
 
 const resolver = dns()
 
-// resolve TXT records
+// resolve only TXT records
 const result = await dns.query('google.com', {
   types: [
     RecordType.TXT
   ]
 })
 ```
-
-N.b if multiple record types are specified, most resolvers will throw if answers
-are not available for all of them, so if you consider some record types optional
-it's better to make multiple queries.
 
 ## Caching
 
