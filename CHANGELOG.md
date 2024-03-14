@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/multiformats/js-dns/compare/v1.0.4...v1.0.5) (2024-03-14)
+
+
+### Bug Fixes
+
+* update TTL of cached results ([#4](https://github.com/multiformats/js-dns/issues/4)) ([876432e](https://github.com/multiformats/js-dns/commit/876432ea447edee27868e6e67a8c036697482522))
+
 ## [1.0.4](https://github.com/multiformats/js-dns/compare/v1.0.3...v1.0.4) (2024-03-14)
 
 
