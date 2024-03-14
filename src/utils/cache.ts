@@ -56,8 +56,9 @@ class CachedAnswers {
         .filter((entry) => {
           return entry.expires > Date.now()
         })
-        .map(({ value }) => ({
+        .map(({ expires, value }) => ({
           ...value,
+          TTL: Math.round((expires - Date.now()) / 1000),
           type: RecordType[value.type]
         }))
 
