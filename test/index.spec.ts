@@ -1,6 +1,7 @@
 import { expect } from 'aegir/chai'
 import Sinon from 'sinon'
 import { RecordType, dns } from '../src/index.js'
+import type { Answer } from '@multiformats/dns'
 
 describe('dns', () => {
   it('should query dns', async () => {
@@ -67,6 +68,40 @@ describe('dns', () => {
     expect(result).to.have.nested.property('Answer[0].data', answerA.data)
     expect(result).to.have.nested.property('Answer[1].data', answerAAAA.data)
     expect(defaultResolver.calledOnce).to.be.true()
+  })
+
+  it('should update the TTL of cached results', async () => {
+    const defaultResolver = Sinon.stub()
+
+    const answerA: Answer = {
+      name: 'result-with-update-ttl.com',
+      data: '123.123.123.123',
+      type: RecordType.A,
+      TTL: 60
+    }
+
+    defaultResolver.withArgs('result-with-update-ttl.com').resolves({
+      Answer: [answerA]
+    })
+
+    const resolver = dns({
+      resolvers: {
+        '.': defaultResolver
+      }
+    })
+    const resultA = await resolver.query('result-with-update-ttl.com')
+
+    // wait for long enough that TTL changes
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve()
+      }, 5000)
+    })
+
+    const resultB = await resolver.query('result-with-update-ttl.com')
+
+    expect(defaultResolver.calledOnce).to.be.true()
+    expect(resultA.Answer[0].TTL).to.be.greaterThan(resultB.Answer[0].TTL)
   })
 
   it('should use separate caches', async () => {
