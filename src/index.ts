@@ -12,7 +12,7 @@
  *
  * const resolver = dns()
  *
- * // resolve A and AAAA records with a 5s timeout
+ * // resolve A records with a 5s timeout
  * const result = await dns.query('google.com', {
  *   signal: AbortSignal.timeout(5000)
  * })
@@ -217,7 +217,44 @@ export type ResolveDnsProgressEvents =
 export type DNSResolvers = Record<string, DNSResolver | DNSResolver[]>
 
 export interface DNSInit {
+  /**
+   * A set of resolvers used to answer DNS queries
+   *
+   * String keys control which resolvers are used for which TLDs.
+   *
+   * @example
+   *
+   * ```TypeScript
+   * import { dns } from '@multiformats/dns'
+   * import { dnsOverHttps } from '@multiformats/dns'
+   *
+   * const resolver = dns({
+   *   resolvers: {
+   *     // only used for .com domains
+   *     'com.': dnsOverHttps('https://example-1.com'),
+   *
+   *     // only used for .net domains, can be an array
+   *     'net.': [
+   *       dnsOverHttps('https://example-2.com'),
+   *       dnsOverHttps('https://example-3.com'),
+   *     ],
+   *
+   *     // used for everything else (can be an array)
+   *     '.': dnsOverHttps('https://example-4.com')
+   *   }
+   * })
+   * ```
+   */
   resolvers?: DNSResolvers
+
+  /**
+   * To avoid repeating DNS lookups, successful answers are cached according to
+   * their TTL. To avoid exhausting memory, this option controls how many
+   * answers to cache.
+   *
+   * @default 1000
+   */
+  cacheSize?: number
 }
 
 export function dns (init: DNSInit = {}): DNS {

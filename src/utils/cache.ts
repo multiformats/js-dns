@@ -8,12 +8,19 @@ interface CachedAnswer {
   value: Answer
 }
 
+export interface AnswerCache {
+  get (fqdn: string, types: RecordType[]): DNSResponse | undefined
+  add (domain: string, answer: Answer): void
+  remove (domain: string, type: ResponseType): void
+  clear (): void
+}
+
 /**
  * Time Aware Least Recent Used Cache
  *
  * @see https://arxiv.org/pdf/1801.00390
  */
-export class AnswerCache {
+class CachedAnswers {
   private readonly lru: ReturnType<typeof hashlru>
 
   constructor (maxSize: number) {
@@ -92,4 +99,6 @@ export class AnswerCache {
 /**
  * Avoid sending multiple queries for the same hostname by caching results
  */
-export const cache = new AnswerCache(1000)
+export function cache (size: number): AnswerCache {
+  return new CachedAnswers(size)
+}

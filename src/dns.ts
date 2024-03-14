@@ -4,12 +4,17 @@ import { cache } from './utils/cache.js'
 import { getTypes } from './utils/get-types.js'
 import type { DNS as DNSInterface, DNSInit, DNSResponse, QueryOptions } from './index.js'
 import type { DNSResolver } from './resolvers/index.js'
+import type { AnswerCache } from './utils/cache.js'
+
+const DEFAULT_ANSWER_CACHE_SIZE = 1000
 
 export class DNS implements DNSInterface {
-  private resolvers: Record<string, DNSResolver[]>
+  private readonly resolvers: Record<string, DNSResolver[]>
+  private readonly cache: AnswerCache
 
   constructor (init: DNSInit) {
     this.resolvers = {}
+    this.cache = cache(init.cacheSize ?? DEFAULT_ANSWER_CACHE_SIZE)
 
     Object.entries(init.resolvers ?? {}).forEach(([tld, resolver]) => {
       if (!Array.isArray(resolver)) {
@@ -40,7 +45,7 @@ export class DNS implements DNSInterface {
    */
   async query (domain: string, options: QueryOptions = {}): Promise<DNSResponse> {
     const types = getTypes(options.types)
-    const cached = options.cached !== false ? cache.get(domain, types) : undefined
+    const cached = options.cached !== false ? this.cache.get(domain, types) : undefined
 
     if (cached != null) {
       options.onProgress?.(new CustomProgressEvent<string>('dns:cache', { detail: cached }))
@@ -68,7 +73,7 @@ export class DNS implements DNSInterface {
         })
 
         for (const answer of result.Answer) {
-          cache.add(domain, answer)
+          this.cache.add(domain, answer)
         }
 
         return result
