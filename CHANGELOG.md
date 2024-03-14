@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/multiformats/js-dns/compare/v1.0.3...v1.0.4) (2024-03-14)
+
+
+### Bug Fixes
+
+* use per-instance caching ([#3](https://github.com/multiformats/js-dns/issues/3)) ([dc651f5](https://github.com/multiformats/js-dns/commit/dc651f59a9af430111b1d02606e1e3c2b4310804))
+
 ## [1.0.3](https://github.com/multiformats/js-dns/compare/v1.0.2...v1.0.3) (2024-03-13)
 
 
