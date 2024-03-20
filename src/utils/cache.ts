@@ -1,5 +1,6 @@
 import hashlru from 'hashlru'
 import { RecordType } from '../index.js'
+import { convertType } from './get-types.js'
 import { DEFAULT_TTL, toDNSResponse } from './to-dns-response.js'
 import type { Answer, DNSResponse, RecordTypeLabel } from '../index.js'
 
@@ -27,6 +28,25 @@ class CachedAnswers {
     this.lru = hashlru(maxSize)
   }
 
+  /**
+   * We index the cache on 'domain-{@link RecordType}` instead of
+   * 'domain-{@link RecordType}|{@link RecordTypeLabel}' to ensure that we don't
+   * cache the same answers separately for RecordType.A and RecordTypeLabel.A.
+   *
+   * This means, if you query a resolver with `useRecordTypeValue=true`, and
+   * they return an empty answer, that empty answer will be cached, and a
+   * subsequent call with `useRecordTypeValue=false` would need to be paired
+   * with `cached: false` to avoid getting the empty answer back when using a
+   * {@link RecordTypeLabel}.
+   *
+   * NOTE: this will resolve/obfuscate the issue where dns resolvers return
+   * different answers depending on the value of the "type" field in the query.
+   * But give the user the ability to retry with a different type if they want
+   */
+  private getKey (domain: string, type: RecordType | RecordTypeLabel): string {
+    return `${domain.toLowerCase()}-${convertType(type, true)}`
+  }
+
   get (fqdn: string, types: RecordType[]): DNSResponse | undefined {
     let foundAllAnswers = true
     const answers: Answer[] = []
@@ -48,7 +68,7 @@ class CachedAnswers {
   }
 
   private getAnswers (domain: string, type: RecordType): Answer[] {
-    const key = `${domain.toLowerCase()}-${type}`
+    const key = this.getKey(domain, type)
     const answers: CachedAnswer[] = this.lru.get(key)
 
     if (answers != null) {
@@ -75,7 +95,7 @@ class CachedAnswers {
   }
 
   add (domain: string, answer: Answer): void {
-    const key = `${domain.toLowerCase()}-${answer.type}`
+    const key = this.getKey(domain, answer.type)
 
     const answers: CachedAnswer[] = this.lru.get(key) ?? []
     answers.push({

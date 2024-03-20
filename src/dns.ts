@@ -52,7 +52,10 @@ export class DNS implements DNSInterface {
 
     if (cached != null) {
       options.onProgress?.(new CustomProgressEvent<string>('dns:cache', { detail: cached }))
-
+      cached.Answer = cached.Answer.map((answer) => {
+        answer.type = convertType(answer.type, options.useRecordTypeValue)
+        return answer
+      })
       return cached
     }
 

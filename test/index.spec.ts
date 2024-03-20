@@ -242,11 +242,20 @@ describe('dns', () => {
     const answerA = {
       name: 'example-useRecordTypeValue-true.com',
       data: '123.123.123.123',
+      type: RecordType.A
+    }
+
+    const answerA2 = {
+      name: 'example-useRecordTypeValue-true.com',
+      data: '123.123.123.123',
       type: RecordTypeLabel.A
     }
 
-    defaultResolver.withArgs('example-useRecordTypeValue-true.com').resolves({
+    defaultResolver.onCall(0).resolves({
       Answer: [answerA]
+    })
+    defaultResolver.onCall(1).resolves({
+      Answer: [answerA2]
     })
 
     const resolver = dns({
@@ -255,10 +264,18 @@ describe('dns', () => {
       }
     })
 
-    const res1 = await resolver.query('example-useRecordTypeValue-true.com')
+    const res1 = await resolver.query('example-useRecordTypeValue-true.com', {
+      cached: false,
+      types: [RecordTypeLabel.A]
+    })
+    const res2 = await resolver.query('example-useRecordTypeValue-true.com', {
+      cached: false,
+      types: [RecordType.A]
+    })
     expect(res1).to.have.nested.property('Answer[0].type', RecordType.A)
+    expect(res2).to.have.nested.property('Answer[0].type', RecordType.A)
 
-    expect(defaultResolver.callCount).to.equal(1)
+    expect(defaultResolver.callCount).to.equal(2)
   })
 
   it('should convert RecordType to RecordTypeLabel when useRecordTypeValue=false', async () => {
@@ -270,7 +287,76 @@ describe('dns', () => {
       type: RecordType.A
     }
 
-    defaultResolver.withArgs('example-useRecordTypeValue-false.com').resolves({
+    const answerA2 = {
+      name: 'example-useRecordTypeValue-false.com',
+      data: '123.123.123.123',
+      type: RecordTypeLabel.A
+    }
+
+    defaultResolver.onCall(0).resolves({
+      Answer: [answerA]
+    })
+    defaultResolver.onCall(1).resolves({
+      Answer: [answerA2]
+    })
+
+    const resolver = dns({
+      resolvers: {
+        '.': defaultResolver
+      },
+      useRecordTypeValue: false
+    })
+
+    const res1 = await resolver.query('example-useRecordTypeValue-false.com', {
+      cached: false,
+      types: [RecordTypeLabel.A]
+    })
+    const res2 = await resolver.query('example-useRecordTypeValue-false.com', {
+      cached: false,
+      types: [RecordType.A]
+    })
+    expect(res1).to.have.nested.property('Answer[0].type', RecordTypeLabel.A)
+    expect(res2).to.have.nested.property('Answer[0].type', RecordTypeLabel.A)
+
+    expect(defaultResolver.callCount).to.equal(2)
+  })
+
+  it('should override useRecordTypeValue default', async () => {
+    const defaultResolver = Sinon.stub()
+
+    const answerA = {
+      name: 'example-override-useRecordTypeValue.com',
+      data: '123.123.123.123',
+      type: RecordType.A
+    }
+
+    defaultResolver.resolves({
+      Answer: [answerA]
+    })
+
+    const resolver = dns({
+      resolvers: {
+        '.': defaultResolver
+      }
+    })
+    await resolver.query('example-override-useRecordTypeValue.com', {
+      types: [RecordType.A],
+      useRecordTypeValue: false
+    })
+    expect(defaultResolver.withArgs('example-override-useRecordTypeValue.com', Sinon.match({ useRecordTypeValue: true })).callCount).to.equal(0)
+    expect(defaultResolver.withArgs('example-override-useRecordTypeValue.com', Sinon.match({ useRecordTypeValue: false })).callCount).to.equal(1)
+  })
+
+  it('should override useRecordTypeValue=false', async () => {
+    const defaultResolver = Sinon.stub()
+
+    const answerA = {
+      name: 'example-override-useRecordTypeValue-false.com',
+      data: '123.123.123.123',
+      type: RecordType.A
+    }
+
+    defaultResolver.resolves({
       Answer: [answerA]
     })
 
@@ -281,8 +367,79 @@ describe('dns', () => {
       useRecordTypeValue: false
     })
 
-    const res1 = await resolver.query('example-useRecordTypeValue-false.com')
+    await resolver.query('example-override-useRecordTypeValue-false.com', {
+      types: [RecordType.A],
+      useRecordTypeValue: true
+    })
+    expect(defaultResolver.withArgs('example-override-useRecordTypeValue-false.com', Sinon.match({ useRecordTypeValue: true })).callCount).to.equal(1)
+    expect(defaultResolver.withArgs('example-override-useRecordTypeValue-false.com', Sinon.match({ useRecordTypeValue: false })).callCount).to.equal(0)
+  })
+
+  it('should convert cached RecordType', async () => {
+    const defaultResolver = Sinon.stub()
+
+    const answerA = {
+      name: 'example-RecordType-cached.com',
+      data: '123.123.123.123',
+      type: RecordType.A
+    }
+
+    defaultResolver.resolves({
+      Answer: [answerA]
+    })
+
+    const resolver = dns({
+      resolvers: {
+        '.': defaultResolver
+      }
+    })
+
+    const res1 = await resolver.query('example-RecordType-cached.com', {
+      types: [RecordType.A]
+    })
+    expect(res1).to.have.nested.property('Answer[0].type', RecordType.A)
+
+    const res2 = await resolver.query('example-RecordType-cached.com', {
+      cached: true,
+      types: [RecordTypeLabel.A],
+      useRecordTypeValue: false // convert from cached RecordType to RecordTypeLabel
+    })
+    expect(res2).to.have.nested.property('Answer[0].type', RecordTypeLabel.A)
+
+    expect(defaultResolver.callCount).to.equal(1)
+  })
+
+  it('should convert cached RecordTypeLabel', async () => {
+    const defaultResolver = Sinon.stub()
+
+    const answerA = {
+      name: 'example-RecordType-cached.com',
+      data: '123.123.123.123',
+      type: RecordTypeLabel.A
+    }
+
+    defaultResolver.resolves({
+      Answer: [answerA]
+    })
+
+    const resolver = dns({
+      resolvers: {
+        '.': defaultResolver
+      }
+    })
+
+    const res1 = await resolver.query('example-RecordType-cached.com', {
+      cached: true,
+      types: [RecordType.A],
+      useRecordTypeValue: false
+    })
     expect(res1).to.have.nested.property('Answer[0].type', RecordTypeLabel.A)
+
+    const res2 = await resolver.query('example-RecordType-cached.com', {
+      cached: true,
+      types: [RecordType.A]
+    })
+    expect(res2).to.have.nested.property('Answer[0].type', RecordType.A)
 
     expect(defaultResolver.callCount).to.equal(1)
   })
