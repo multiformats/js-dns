@@ -1,7 +1,7 @@
 import { CustomProgressEvent } from 'progress-events'
 import { defaultResolver } from './resolvers/default.js'
 import { cache } from './utils/cache.js'
-import { getTypes } from './utils/get-types.js'
+import { convertType, getTypes } from './utils/get-types.js'
 import type { DNS as DNSInterface, DNSInit, DNSResponse, QueryOptions } from './index.js'
 import type { DNSResolver } from './resolvers/index.js'
 import type { AnswerCache } from './utils/cache.js'
@@ -11,10 +11,12 @@ const DEFAULT_ANSWER_CACHE_SIZE = 1000
 export class DNS implements DNSInterface {
   private readonly resolvers: Record<string, DNSResolver[]>
   private readonly cache: AnswerCache
+  private readonly useRecordTypeValue: boolean
 
   constructor (init: DNSInit) {
     this.resolvers = {}
     this.cache = cache(init.cacheSize ?? DEFAULT_ANSWER_CACHE_SIZE)
+    this.useRecordTypeValue = init.useRecordTypeValue ?? true
 
     Object.entries(init.resolvers ?? {}).forEach(([tld, resolver]) => {
       if (!Array.isArray(resolver)) {
@@ -44,12 +46,16 @@ export class DNS implements DNSInterface {
    * Any new responses will be added to the cache for subsequent requests.
    */
   async query (domain: string, options: QueryOptions = {}): Promise<DNSResponse> {
-    const types = getTypes(options.types)
+    options.useRecordTypeValue = options.useRecordTypeValue ?? this.useRecordTypeValue
+    const types = getTypes(options.types, options.useRecordTypeValue)
     const cached = options.cached !== false ? this.cache.get(domain, types) : undefined
 
     if (cached != null) {
       options.onProgress?.(new CustomProgressEvent<string>('dns:cache', { detail: cached }))
-
+      cached.Answer = cached.Answer.map((answer) => {
+        answer.type = convertType(answer.type, options.useRecordTypeValue)
+        return answer
+      })
       return cached
     }
 
@@ -71,6 +77,14 @@ export class DNS implements DNSInterface {
           ...options,
           types
         })
+
+        result.Answer = result.Answer
+          .map((answer) => {
+            // convert type to either RecordType or RecordTypeLabel
+            answer.type = convertType(answer.type, options.useRecordTypeValue)
+
+            return answer
+          })
 
         for (const answer of result.Answer) {
           this.cache.add(domain, answer)
