@@ -1,6 +1,6 @@
 import { expect } from 'aegir/chai'
 import Sinon from 'sinon'
-import { RecordType, dns } from '../src/index.js'
+import { RecordType, RecordTypeLabel, dns } from '../src/index.js'
 import type { Answer } from '../src/index.js'
 
 describe('dns', () => {
@@ -234,5 +234,56 @@ describe('dns', () => {
 
     // only one resolver should have been called
     expect(resolvers.reduce((acc, curr) => acc + curr.callCount, 0)).to.equal(1)
+  })
+
+  it('should convert RecordTypeLabel to RecordType when useRecordTypeValue=true', async () => {
+    const defaultResolver = Sinon.stub()
+
+    const answerA = {
+      name: 'example-useRecordTypeValue-true.com',
+      data: '123.123.123.123',
+      type: RecordTypeLabel.A
+    }
+
+    defaultResolver.withArgs('example-useRecordTypeValue-true.com').resolves({
+      Answer: [answerA]
+    })
+
+    const resolver = dns({
+      resolvers: {
+        '.': defaultResolver
+      }
+    })
+
+    const res1 = await resolver.query('example-useRecordTypeValue-true.com')
+    expect(res1).to.have.nested.property('Answer[0].type', RecordType.A)
+
+    expect(defaultResolver.callCount).to.equal(1)
+  })
+
+  it('should convert RecordType to RecordTypeLabel when useRecordTypeValue=false', async () => {
+    const defaultResolver = Sinon.stub()
+
+    const answerA = {
+      name: 'example-useRecordTypeValue-false.com',
+      data: '123.123.123.123',
+      type: RecordType.A
+    }
+
+    defaultResolver.withArgs('example-useRecordTypeValue-false.com').resolves({
+      Answer: [answerA]
+    })
+
+    const resolver = dns({
+      resolvers: {
+        '.': defaultResolver
+      },
+      useRecordTypeValue: false
+    })
+
+    const res1 = await resolver.query('example-useRecordTypeValue-false.com')
+    expect(res1).to.have.nested.property('Answer[0].type', RecordTypeLabel.A)
+
+    expect(defaultResolver.callCount).to.equal(1)
   })
 })

@@ -1,7 +1,7 @@
 import { CustomProgressEvent } from 'progress-events'
 import { defaultResolver } from './resolvers/default.js'
 import { cache } from './utils/cache.js'
-import { getTypes } from './utils/get-types.js'
+import { convertType, getTypes } from './utils/get-types.js'
 import type { DNS as DNSInterface, DNSInit, DNSResponse, QueryOptions } from './index.js'
 import type { DNSResolver } from './resolvers/index.js'
 import type { AnswerCache } from './utils/cache.js'
@@ -74,6 +74,14 @@ export class DNS implements DNSInterface {
           ...options,
           types
         })
+
+        result.Answer = result.Answer
+          .map((answer) => {
+            // convert type to either RecordType or RecordTypeLabel
+            answer.type = convertType(answer.type, options.useRecordTypeValue)
+
+            return answer
+          })
 
         for (const answer of result.Answer) {
           this.cache.add(domain, answer)
