@@ -40,7 +40,8 @@ export function dnsOverHttps (url: string, init: DNSOverHTTPSOptions = {}): DNSR
   })
 
   return async (fqdn, options = {}) => {
-    const types = getTypes(options.types, false) // always use RecordTypeLabel for DNS-over-HTTPS
+    const useRecordTypeValue = options.useRecordTypeValue ?? true
+    const types = getTypes(options.types, false) // always use RecordTypeLabel for dnsPacket
 
     const dnsQuery = dnsPacket.encode({
       type: 'query',
@@ -71,7 +72,7 @@ export function dnsOverHttps (url: string, init: DNSOverHTTPSOptions = {}): DNSR
       }
 
       const buf = await res.arrayBuffer()
-      const response = toDNSResponse(dnsPacket.decode(Buffer.from(buf)))
+      const response = toDNSResponse(dnsPacket.decode(Buffer.from(buf)), useRecordTypeValue)
 
       options.onProgress?.(new CustomProgressEvent<DNSResponse>('dns:response', { detail: response }))
 

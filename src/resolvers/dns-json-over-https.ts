@@ -41,8 +41,9 @@ export function dnsJsonOverHttps (url: string, init: DNSJSONOverHTTPSOptions = {
   return async (fqdn, options = {}) => {
     const searchParams = new URLSearchParams()
     searchParams.set('name', fqdn)
+    const useRecordTypeValue = options.useRecordTypeValue ?? true
 
-    getTypes(options.types, options.useRecordTypeValue).forEach(type => {
+    getTypes(options.types, useRecordTypeValue).forEach(type => {
       searchParams.append('type', type.toString())
     })
 
@@ -61,7 +62,7 @@ export function dnsJsonOverHttps (url: string, init: DNSJSONOverHTTPSOptions = {
         throw new Error(`Unexpected HTTP status: ${res.status} - ${res.statusText}`)
       }
 
-      const response = toDNSResponse(await res.json())
+      const response = toDNSResponse(await res.json(), useRecordTypeValue)
 
       options.onProgress?.(new CustomProgressEvent<DNSResponse>('dns:response', { detail: response }))
 

@@ -213,9 +213,6 @@ export interface QueryOptions extends ProgressOptions<ResolveDnsProgressEvents> 
   /**
    * Whether to use the value or string label of the record type when passing queries to the resolver
    *
-   * Note that for DNS-over-HTTPS, this is always `false` because the npm package
-   * `dns-packet` only supports string label record types for the `encode` method.
-   *
    * @default {true}
    */
   useRecordTypeValue?: boolean

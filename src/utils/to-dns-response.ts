@@ -1,12 +1,13 @@
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 import { RecordType, type DNSResponse } from '../index.js'
+import { convertType } from './get-types.js'
 
 /**
  * This TTL will be used if the remote service does not return one
  */
 export const DEFAULT_TTL = 60
 
-export function toDNSResponse (obj: any): DNSResponse {
+export function toDNSResponse (obj: any, useRecordTypeValue: boolean = true): DNSResponse {
   return {
     Status: obj.Status ?? 0,
     TC: obj.TC ?? obj.flag_tc ?? false,
@@ -23,7 +24,7 @@ export function toDNSResponse (obj: any): DNSResponse {
     Answer: (obj.Answer ?? obj.answers ?? []).map((answer: any) => {
       return {
         name: answer.name,
-        type: RecordType[answer.type],
+        type: convertType(answer.type, useRecordTypeValue),
         TTL: (answer.TTL ?? answer.ttl ?? DEFAULT_TTL),
         data: answer.data instanceof Uint8Array ? uint8ArrayToString(answer.data) : answer.data
       }
