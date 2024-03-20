@@ -5,7 +5,6 @@ import dnsPacket from 'dns-packet'
 import PQueue from 'p-queue'
 import { CustomProgressEvent } from 'progress-events'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
-import { RecordType } from '../index.js'
 import { getTypes } from '../utils/get-types.js'
 import { toDNSResponse } from '../utils/to-dns-response.js'
 import type { DNSResolver } from './index.js'
@@ -20,26 +19,6 @@ export const DEFAULT_QUERY_CONCURRENCY = 4
 
 export interface DNSOverHTTPSOptions {
   queryConcurrency?: number
-}
-
-function toType (type: RecordType): 'A' | 'AAAA' | 'TXT' | 'CNAME' {
-  if (type === RecordType.A) {
-    return 'A'
-  }
-
-  if (type === RecordType.AAAA) {
-    return 'AAAA'
-  }
-
-  if (type === RecordType.TXT) {
-    return 'TXT'
-  }
-
-  if (type === RecordType.CNAME) {
-    return 'CNAME'
-  }
-
-  throw new Error('Unsupported DNS record type')
 }
 
 /**
@@ -61,14 +40,14 @@ export function dnsOverHttps (url: string, init: DNSOverHTTPSOptions = {}): DNSR
   })
 
   return async (fqdn, options = {}) => {
-    const types = getTypes(options.types)
+    const types = getTypes(options.types, false) // always use RecordTypeLabel for DNS-over-HTTPS
 
     const dnsQuery = dnsPacket.encode({
       type: 'query',
       id: 0,
       flags: dnsPacket.RECURSION_DESIRED,
       questions: types.map(type => ({
-        type: toType(type),
+        type,
         name: fqdn
       }))
     })

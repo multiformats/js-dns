@@ -26,8 +26,11 @@ export function convertType (type: RecordType | RecordTypeLabel, useRecordTypeVa
       [RecordTypeLabel.AAAA]: RecordType.AAAA,
       [RecordType.AAAA]: RecordTypeLabel.AAAA
     }
-    // convert given type to other
-    return reverseMap[type]
+    const value = reverseMap[type]
+    if (value == null) {
+      throw new Error(`Unsupported DNS record type ${type}`)
+    }
+    return value
   }
 }
 
