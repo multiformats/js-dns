@@ -96,6 +96,13 @@ export enum RecordType {
   AAAA = 28
 }
 
+export enum RecordTypeLabel {
+  A = 'A',
+  CNAME = 'CNAME',
+  TXT = 'TXT',
+  AAAA = 'AAAA'
+}
+
 export interface Question {
   /**
    * The record name requested.
@@ -107,7 +114,7 @@ export interface Question {
    *
    * @see https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-4.
    */
-  type: RecordType
+  type: RecordType | RecordTypeLabel
 }
 
 export interface Answer {
@@ -121,7 +128,7 @@ export interface Answer {
    *
    * @see https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-4
    */
-  type: RecordType
+  type: RecordType | RecordTypeLabel
 
   /**
    * The number of seconds the answer can be stored in cache before it is
@@ -201,7 +208,14 @@ export interface QueryOptions extends ProgressOptions<ResolveDnsProgressEvents> 
    *
    * @default [RecordType.A, RecordType.AAAA]
    */
-  types?: RecordType | RecordType[]
+  types?: RecordType | RecordTypeLabel | Array<RecordType | RecordTypeLabel>
+
+  /**
+   * Whether to use the value or string label of the record type
+   *
+   * @default {true}
+   */
+  useRecordTypeValue?: boolean
 }
 
 export interface DNS {
@@ -255,6 +269,15 @@ export interface DNSInit {
    * @default 1000
    */
   cacheSize?: number
+
+  /**
+   * Whether to use the value or string label of the record type when passing queries to the resolver
+   *
+   * @see https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-4.
+   *
+   * @default {true}
+   */
+  useRecordTypeValue?: boolean
 }
 
 export function dns (init: DNSInit = {}): DNS {

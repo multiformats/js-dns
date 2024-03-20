@@ -11,10 +11,12 @@ const DEFAULT_ANSWER_CACHE_SIZE = 1000
 export class DNS implements DNSInterface {
   private readonly resolvers: Record<string, DNSResolver[]>
   private readonly cache: AnswerCache
+  private readonly useRecordTypeValue: boolean
 
   constructor (init: DNSInit) {
     this.resolvers = {}
     this.cache = cache(init.cacheSize ?? DEFAULT_ANSWER_CACHE_SIZE)
+    this.useRecordTypeValue = init.useRecordTypeValue ?? true
 
     Object.entries(init.resolvers ?? {}).forEach(([tld, resolver]) => {
       if (!Array.isArray(resolver)) {
@@ -44,7 +46,8 @@ export class DNS implements DNSInterface {
    * Any new responses will be added to the cache for subsequent requests.
    */
   async query (domain: string, options: QueryOptions = {}): Promise<DNSResponse> {
-    const types = getTypes(options.types)
+    options.useRecordTypeValue = options.useRecordTypeValue ?? this.useRecordTypeValue
+    const types = getTypes(options.types, options.useRecordTypeValue)
     const cached = options.cached !== false ? this.cache.get(domain, types) : undefined
 
     if (cached != null) {

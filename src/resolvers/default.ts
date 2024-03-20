@@ -1,34 +1,35 @@
 import { Resolver } from 'dns/promises'
 import { RecordType } from '../index.js'
-import { getTypes } from '../utils/get-types.js'
+import { convertType, getTypes } from '../utils/get-types.js'
 import { toDNSResponse } from '../utils/to-dns-response.js'
 import type { DNSResolver } from './index.js'
-import type { Answer } from '../index.js'
+import type { Answer, RecordTypeLabel } from '../index.js'
 
 const nodeResolver: DNSResolver = async (fqdn, options = {}) => {
   const resolver = new Resolver()
   const listener = (): void => {
     resolver.cancel()
   }
-  const types = getTypes(options.types)
+  const types = getTypes(options.types, options.useRecordTypeValue)
 
   try {
     options.signal?.addEventListener('abort', listener)
 
     const answers = await Promise.all(types.map(async type => {
-      if (type === RecordType.A) {
+      const valueType = convertType(type, options.useRecordTypeValue)
+      if (valueType === RecordType.A) {
         return mapToAnswers(fqdn, type, await resolver.resolve4(fqdn))
       }
 
-      if (type === RecordType.CNAME) {
+      if (valueType === RecordType.CNAME) {
         return mapToAnswers(fqdn, type, await resolver.resolveCname(fqdn))
       }
 
-      if (type === RecordType.TXT) {
+      if (valueType === RecordType.TXT) {
         return mapToAnswers(fqdn, type, await resolver.resolveTxt(fqdn))
       }
 
-      if (type === RecordType.AAAA) {
+      if (valueType === RecordType.AAAA) {
         return mapToAnswers(fqdn, type, await resolver.resolve6(fqdn))
       }
 
@@ -53,7 +54,7 @@ export function defaultResolver (): DNSResolver[] {
   ]
 }
 
-function mapToAnswer (name: string, type: RecordType, data: string): Omit<Answer, 'TTL'> {
+function mapToAnswer (name: string, type: RecordType | RecordTypeLabel, data: string): Omit<Answer, 'TTL'> {
   return {
     name,
     type,
@@ -61,7 +62,7 @@ function mapToAnswer (name: string, type: RecordType, data: string): Omit<Answer
   }
 }
 
-function mapToAnswers (name: string, type: RecordType, data: string | string[] | string[][]): Array<Omit<Answer, 'TTL'>> {
+function mapToAnswers (name: string, type: RecordType | RecordTypeLabel, data: string | string[] | string[][]): Array<Omit<Answer, 'TTL'>> {
   if (!Array.isArray(data)) {
     data = [data]
   }

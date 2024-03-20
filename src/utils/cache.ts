@@ -1,7 +1,7 @@
 import hashlru from 'hashlru'
 import { RecordType } from '../index.js'
 import { DEFAULT_TTL, toDNSResponse } from './to-dns-response.js'
-import type { Answer, DNSResponse } from '../index.js'
+import type { Answer, DNSResponse, RecordTypeLabel } from '../index.js'
 
 interface CachedAnswer {
   expires: number
@@ -9,7 +9,7 @@ interface CachedAnswer {
 }
 
 export interface AnswerCache {
-  get (fqdn: string, types: RecordType[]): DNSResponse | undefined
+  get (fqdn: string, types: Array<RecordType | RecordTypeLabel>): DNSResponse | undefined
   add (domain: string, answer: Answer): void
   remove (domain: string, type: ResponseType): void
   clear (): void

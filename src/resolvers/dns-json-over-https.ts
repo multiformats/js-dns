@@ -42,7 +42,7 @@ export function dnsJsonOverHttps (url: string, init: DNSJSONOverHTTPSOptions = {
     const searchParams = new URLSearchParams()
     searchParams.set('name', fqdn)
 
-    getTypes(options.types).forEach(type => {
+    getTypes(options.types, options.useRecordTypeValue).forEach(type => {
       searchParams.append('type', type.toString())
     })
 
