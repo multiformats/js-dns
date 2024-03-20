@@ -16,7 +16,7 @@ const nodeResolver: DNSResolver = async (fqdn, options = {}) => {
     options.signal?.addEventListener('abort', listener)
 
     const answers = await Promise.all(types.map(async type => {
-      const valueType = convertType(type, options.useRecordTypeValue)
+      const valueType = convertType(type, true)
       if (valueType === RecordType.A) {
         return mapToAnswers(fqdn, type, await resolver.resolve4(fqdn))
       }
