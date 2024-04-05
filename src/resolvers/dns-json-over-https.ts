@@ -2,10 +2,10 @@
 
 import PQueue from 'p-queue'
 import { CustomProgressEvent } from 'progress-events'
+import { RecordType, type DNSResponse } from '../index.js'
 import { getTypes } from '../utils/get-types.js'
 import { toDNSResponse } from '../utils/to-dns-response.js'
 import type { DNSResolver } from './index.js'
-import type { DNSResponse } from '../index.js'
 
 /**
  * Browsers limit concurrent connections per host (~6), we don't want to exhaust
@@ -43,7 +43,8 @@ export function dnsJsonOverHttps (url: string, init: DNSJSONOverHTTPSOptions = {
     searchParams.set('name', fqdn)
 
     getTypes(options.types).forEach(type => {
-      searchParams.append('type', type.toString())
+      // We pass record type as a string to the server because cloudflare DNS bug. see https://github.com/ipfs/helia/issues/474
+      searchParams.append('type', RecordType[type])
     })
 
     options.onProgress?.(new CustomProgressEvent<string>('dns:query', { detail: fqdn }))
