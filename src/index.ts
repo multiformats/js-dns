@@ -90,10 +90,10 @@ import type { ProgressEvent, ProgressOptions } from 'progress-events'
  * @see https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-4.
  */
 export enum RecordType {
-  A = 1,
-  CNAME = 5,
-  TXT = 16,
-  AAAA = 28
+  A = 'A',
+  CNAME = 'CNAME',
+  TXT = 'TXT',
+  AAAA = 'AAAA'
 }
 
 export interface Question {
