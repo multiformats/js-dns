@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/multiformats/js-dns/compare/v1.0.5...v1.0.6) (2024-04-06)
+
+
+### Bug Fixes
+
+* cloudflare dns only supports string type ([#7](https://github.com/multiformats/js-dns/issues/7)) ([a49bb37](https://github.com/multiformats/js-dns/commit/a49bb37da6151ecdec164ebaedb133541de41b3c))
+
 ## [1.0.5](https://github.com/multiformats/js-dns/compare/v1.0.4...v1.0.5) (2024-03-14)
 
 
