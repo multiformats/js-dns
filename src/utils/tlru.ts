@@ -6,9 +6,10 @@ import hashlru from 'hashlru'
  * @see https://arxiv.org/pdf/1801.00390
  */
 export class TLRU<T> {
-  private readonly lru: ReturnType<typeof hashlru>
+  private readonly lru: any
 
   constructor (maxSize: number) {
+    // @ts-expect-error types are broken - https://github.com/dominictarr/hashlru/pull/24
     this.lru = hashlru(maxSize)
   }
 

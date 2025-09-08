@@ -48,7 +48,7 @@ export class DNS implements DNSInterface {
     const cached = options.cached !== false ? this.cache.get(domain, types) : undefined
 
     if (cached != null) {
-      options.onProgress?.(new CustomProgressEvent<string>('dns:cache', { detail: cached }))
+      options.onProgress?.(new CustomProgressEvent<DNSResponse>('dns:cache', cached))
 
       return cached
     }
@@ -79,7 +79,7 @@ export class DNS implements DNSInterface {
         return result
       } catch (err: any) {
         errors.push(err)
-        options.onProgress?.(new CustomProgressEvent<Error>('dns:error', { detail: err }))
+        options.onProgress?.(new CustomProgressEvent<Error>('dns:error', err))
       }
     }
 
