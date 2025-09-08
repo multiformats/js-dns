@@ -76,7 +76,7 @@ export function dnsOverHttps (url: string, init: DNSOverHTTPSOptions = {}): DNSR
     const searchParams = new URLSearchParams()
     searchParams.set('dns', uint8ArrayToString(dnsQuery, 'base64url'))
 
-    options.onProgress?.(new CustomProgressEvent<string>('dns:query', { detail: fqdn }))
+    options.onProgress?.(new CustomProgressEvent<string>('dns:query', fqdn))
 
     // query DNS over HTTPS server
     const response = await httpQueue.add(async () => {
@@ -94,7 +94,7 @@ export function dnsOverHttps (url: string, init: DNSOverHTTPSOptions = {}): DNSR
       const buf = await res.arrayBuffer()
       const response = toDNSResponse(dnsPacket.decode(Buffer.from(buf)))
 
-      options.onProgress?.(new CustomProgressEvent<DNSResponse>('dns:response', { detail: response }))
+      options.onProgress?.(new CustomProgressEvent<DNSResponse>('dns:response', response))
 
       return response
     }, {
