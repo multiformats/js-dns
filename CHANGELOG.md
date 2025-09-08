@@ -1,3 +1,9 @@
+## [1.0.8](https://github.com/multiformats/js-dns/compare/v1.0.7...v1.0.8) (2025-09-08)
+
+### Dependencies
+
+* **dev:** bump sinon from 17.0.2 to 18.0.0 ([#8](https://github.com/multiformats/js-dns/issues/8)) ([2511eab](https://github.com/multiformats/js-dns/commit/2511eabf68b2a902a241454ad6ceb4573edd6bb9))
+
 ## [1.0.7](https://github.com/multiformats/js-dns/compare/v1.0.6...v1.0.7) (2025-09-08)
 
 ### Dependencies
