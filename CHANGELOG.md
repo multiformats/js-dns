@@ -1,3 +1,9 @@
+## [1.0.9](https://github.com/multiformats/js-dns/compare/v1.0.8...v1.0.9) (2025-09-08)
+
+### Bug Fixes
+
+* move dns-packet types to dev deps ([#16](https://github.com/multiformats/js-dns/issues/16)) ([6688913](https://github.com/multiformats/js-dns/commit/6688913c1179b2ce34e1b1bb4958eb2d2535d758))
+
 ## [1.0.8](https://github.com/multiformats/js-dns/compare/v1.0.7...v1.0.8) (2025-09-08)
 
 ### Dependencies
