@@ -1,3 +1,9 @@
+## [1.0.7](https://github.com/multiformats/js-dns/compare/v1.0.6...v1.0.7) (2025-09-08)
+
+### Dependencies
+
+* **dev:** bump aegir from 42.2.11 to 44.1.1 ([#14](https://github.com/multiformats/js-dns/issues/14)) ([a5dee6f](https://github.com/multiformats/js-dns/commit/a5dee6fbeaeea58f285599983b533ef21bab2d80))
+
 ## [1.0.6](https://github.com/multiformats/js-dns/compare/v1.0.5...v1.0.6) (2024-04-06)
 
 
