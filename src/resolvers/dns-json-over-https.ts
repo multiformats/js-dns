@@ -2,9 +2,10 @@
 
 import PQueue from 'p-queue'
 import { CustomProgressEvent } from 'progress-events'
-import { RecordType, type DNSResponse } from '../index.js'
+import { RecordType } from '../index.js'
 import { getTypes } from '../utils/get-types.js'
 import { toDNSResponse } from '../utils/to-dns-response.js'
+import type { DNSResponse } from '../index.js'
 import type { DNSResolver } from './index.js'
 
 /**
@@ -47,7 +48,7 @@ export function dnsJsonOverHttps (url: string, init: DNSJSONOverHTTPSOptions = {
       searchParams.append('type', RecordType[type])
     })
 
-    options.onProgress?.(new CustomProgressEvent<string>('dns:query', { detail: fqdn }))
+    options.onProgress?.(new CustomProgressEvent<string>('dns:query', fqdn))
 
     // query DNS-JSON over HTTPS server
     const response = await httpQueue.add(async () => {
@@ -64,7 +65,7 @@ export function dnsJsonOverHttps (url: string, init: DNSJSONOverHTTPSOptions = {
 
       const response = toDNSResponse(await res.json())
 
-      options.onProgress?.(new CustomProgressEvent<DNSResponse>('dns:response', { detail: response }))
+      options.onProgress?.(new CustomProgressEvent<DNSResponse>('dns:response', response))
 
       return response
     }, {
