@@ -21,9 +21,10 @@ export interface AnswerCache {
  * @see https://arxiv.org/pdf/1801.00390
  */
 class CachedAnswers {
-  private readonly lru: ReturnType<typeof hashlru>
+  private readonly lru: any
 
   constructor (maxSize: number) {
+    // @ts-expect-error types are broken - https://github.com/dominictarr/hashlru/pull/24
     this.lru = hashlru(maxSize)
   }
 
