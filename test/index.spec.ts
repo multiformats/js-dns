@@ -230,7 +230,10 @@ describe('dns', () => {
       signal: controller.signal
     })
 
-    await expect(result).to.eventually.be.rejectedWith(error)
+    await expect(result).to.eventually.be.rejected()
+      .with.deep.property('errors', [
+        error
+      ])
 
     // only one resolver should have been called
     expect(resolvers.reduce((acc, curr) => acc + curr.callCount, 0)).to.equal(1)
