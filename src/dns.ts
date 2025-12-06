@@ -1,4 +1,5 @@
 import { CustomProgressEvent } from 'progress-events'
+import { DNSQueryFailedError } from './errors.ts'
 import { defaultResolver } from './resolvers/default.js'
 import { cache } from './utils/cache.js'
 import { getTypes } from './utils/get-types.js'
@@ -83,10 +84,6 @@ export class DNS implements DNSInterface {
       }
     }
 
-    if (errors.length === 1) {
-      throw errors[0]
-    }
-
-    throw new AggregateError(errors, `DNS lookup of ${domain} ${types} failed`)
+    throw new DNSQueryFailedError(errors, `DNS lookup of ${domain} ${types} failed`)
   }
 }
