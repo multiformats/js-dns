@@ -1,7 +1,6 @@
 /* eslint-env browser */
 
-import { Buffer } from 'buffer'
-import dnsPacket from 'dns-packet'
+import { decode, encode, RECURSION_DESIRED } from '@dnsquery/dns-packet'
 import PQueue from 'p-queue'
 import { CustomProgressEvent } from 'progress-events'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
@@ -63,10 +62,10 @@ export function dnsOverHttps (url: string, init: DNSOverHTTPSOptions = {}): DNSR
   return async (fqdn, options = {}) => {
     const types = getTypes(options.types)
 
-    const dnsQuery = dnsPacket.encode({
+    const dnsQuery = encode({
       type: 'query',
       id: 0,
-      flags: dnsPacket.RECURSION_DESIRED,
+      flags: RECURSION_DESIRED,
       questions: types.map(type => ({
         type: toType(type),
         name: fqdn
@@ -92,7 +91,7 @@ export function dnsOverHttps (url: string, init: DNSOverHTTPSOptions = {}): DNSR
       }
 
       const buf = await res.arrayBuffer()
-      const response = toDNSResponse(dnsPacket.decode(Buffer.from(buf)))
+      const response = toDNSResponse(decode(new Uint8Array(buf, 0, buf.byteLength)))
 
       options.onProgress?.(new CustomProgressEvent<DNSResponse>('dns:response', response))
 
