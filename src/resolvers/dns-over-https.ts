@@ -1,6 +1,5 @@
 /* eslint-env browser */
 
-import { Buffer } from 'buffer'
 import { decode, encode, RECURSION_DESIRED } from '@dnsquery/dns-packet'
 import PQueue from 'p-queue'
 import { CustomProgressEvent } from 'progress-events'
