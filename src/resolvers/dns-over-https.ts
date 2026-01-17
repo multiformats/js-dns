@@ -91,7 +91,7 @@ export function dnsOverHttps (url: string, init: DNSOverHTTPSOptions = {}): DNSR
       }
 
       const buf = await res.arrayBuffer()
-      const response = toDNSResponse(decode(Buffer.from(buf)))
+      const response = toDNSResponse(decode(new Uint8Array(buf, 0, buf.byteLength)))
 
       options.onProgress?.(new CustomProgressEvent<DNSResponse>('dns:response', response))
 
