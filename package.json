@@ -1,6 +1,6 @@
 {
   "name": "@multiformats/dns",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Resolve DNS queries with browser fallback",
   "license": "Apache-2.0 OR MIT",
   "homepage": "https://github.com/multiformats/js-dns#readme",

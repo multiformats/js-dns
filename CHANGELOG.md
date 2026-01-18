@@ -1,3 +1,9 @@
+## [1.0.12](https://github.com/multiformats/js-dns/compare/v1.0.11...v1.0.12) (2026-01-18)
+
+### Bug Fixes
+
+* replace dns-packet with `@dnsquery/dns-packet` ([#23](https://github.com/multiformats/js-dns/issues/23)) ([2f1e004](https://github.com/multiformats/js-dns/commit/2f1e004e119d37cbc505cfd18a0b76906ced2ec1))
+
 ## [1.0.11](https://github.com/multiformats/js-dns/compare/v1.0.10...v1.0.11) (2025-12-07)
 
 ### Bug Fixes
