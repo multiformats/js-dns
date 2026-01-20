@@ -1,5 +1,3 @@
-/* eslint-env browser */
-
 import { decode, encode, RECURSION_DESIRED } from '@dnsquery/dns-packet'
 import PQueue from 'p-queue'
 import { CustomProgressEvent } from 'progress-events'
@@ -9,6 +7,7 @@ import { getTypes } from '../utils/get-types.js'
 import { toDNSResponse } from '../utils/to-dns-response.js'
 import type { DNSResolver } from './index.js'
 import type { DNSResponse } from '../index.js'
+import type { ComponentLogger } from '@libp2p/interface'
 
 /**
  * Browsers limit concurrent connections per host (~6), we don't want to exhaust
@@ -19,6 +18,7 @@ export const DEFAULT_QUERY_CONCURRENCY = 4
 
 export interface DNSOverHTTPSOptions {
   queryConcurrency?: number
+  logger?: ComponentLogger
 }
 
 function toType (type: RecordType): 'A' | 'AAAA' | 'TXT' | 'CNAME' {
@@ -60,6 +60,7 @@ export function dnsOverHttps (url: string, init: DNSOverHTTPSOptions = {}): DNSR
   })
 
   return async (fqdn, options = {}) => {
+    const log = options?.logger?.forComponent('dns:dns-over-https')
     const types = getTypes(options.types)
 
     const dnsQuery = encode({
@@ -79,12 +80,16 @@ export function dnsOverHttps (url: string, init: DNSOverHTTPSOptions = {}): DNSR
 
     // query DNS over HTTPS server
     const response = await httpQueue.add(async () => {
+      log?.('GET %s', `${url}?${searchParams}`)
+
       const res = await fetch(`${url}?${searchParams}`, {
         headers: {
           accept: 'application/dns-message'
         },
         signal: options.signal
       })
+
+      log?.('GET %s %d', res.url, res.status)
 
       if (res.status !== 200) {
         throw new Error(`Unexpected HTTP status: ${res.status} - ${res.statusText}`)
