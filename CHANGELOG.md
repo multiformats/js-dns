@@ -1,3 +1,9 @@
+## [1.0.13](https://github.com/multiformats/js-dns/compare/v1.0.12...v1.0.13) (2026-01-20)
+
+### Bug Fixes
+
+* add logging ([#24](https://github.com/multiformats/js-dns/issues/24)) ([e167835](https://github.com/multiformats/js-dns/commit/e167835fc120bbeeab8b2f8670571b819a9e3c6c))
+
 ## [1.0.12](https://github.com/multiformats/js-dns/compare/v1.0.11...v1.0.12) (2026-01-18)
 
 ### Bug Fixes
