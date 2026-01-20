@@ -1,5 +1,3 @@
-/* eslint-env browser */
-
 import PQueue from 'p-queue'
 import { CustomProgressEvent } from 'progress-events'
 import { RecordType } from '../index.js'
@@ -40,6 +38,7 @@ export function dnsJsonOverHttps (url: string, init: DNSJSONOverHTTPSOptions = {
   })
 
   return async (fqdn, options = {}) => {
+    const log = options?.logger?.forComponent('dns:dns-json-over-https')
     const searchParams = new URLSearchParams()
     searchParams.set('name', fqdn)
 
@@ -50,6 +49,8 @@ export function dnsJsonOverHttps (url: string, init: DNSJSONOverHTTPSOptions = {
 
     options.onProgress?.(new CustomProgressEvent<string>('dns:query', fqdn))
 
+    log?.('GET %s', `${url}?${searchParams}`)
+
     // query DNS-JSON over HTTPS server
     const response = await httpQueue.add(async () => {
       const res = await fetch(`${url}?${searchParams}`, {
@@ -58,6 +59,8 @@ export function dnsJsonOverHttps (url: string, init: DNSJSONOverHTTPSOptions = {
         },
         signal: options?.signal
       })
+
+      log?.('GET %s %d', res.url, res.status)
 
       if (res.status !== 200) {
         throw new Error(`Unexpected HTTP status: ${res.status} - ${res.statusText}`)

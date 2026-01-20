@@ -82,6 +82,7 @@
 
 import { DNS as DNSClass } from './dns.js'
 import type { DNSResolver } from './resolvers/index.js'
+import type { ComponentLogger } from '@libp2p/interface'
 import type { ProgressEvent, ProgressOptions } from 'progress-events'
 
 /**
@@ -202,6 +203,11 @@ export interface QueryOptions extends ProgressOptions<ResolveDnsProgressEvents> 
    * @default [RecordType.A, RecordType.AAAA]
    */
   types?: RecordType | RecordType[]
+
+  /**
+   * An optional logger
+   */
+  logger?: ComponentLogger
 }
 
 export interface DNS {
@@ -255,6 +261,11 @@ export interface DNSInit {
    * @default 1000
    */
   cacheSize?: number
+
+  /**
+   * An optional logger
+   */
+  logger?: ComponentLogger
 }
 
 export function dns (init: DNSInit = {}): DNS {

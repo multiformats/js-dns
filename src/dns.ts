@@ -6,16 +6,19 @@ import { getTypes } from './utils/get-types.js'
 import type { DNS as DNSInterface, DNSInit, DNSResponse, QueryOptions } from './index.js'
 import type { DNSResolver } from './resolvers/index.js'
 import type { AnswerCache } from './utils/cache.js'
+import type { ComponentLogger } from '@libp2p/interface'
 
 const DEFAULT_ANSWER_CACHE_SIZE = 1000
 
 export class DNS implements DNSInterface {
   private readonly resolvers: Record<string, DNSResolver[]>
   private readonly cache: AnswerCache
+  private readonly logger?: ComponentLogger
 
   constructor (init: DNSInit) {
     this.resolvers = {}
     this.cache = cache(init.cacheSize ?? DEFAULT_ANSWER_CACHE_SIZE)
+    this.logger = init.logger
 
     Object.entries(init.resolvers ?? {}).forEach(([tld, resolver]) => {
       if (!Array.isArray(resolver)) {
@@ -70,6 +73,7 @@ export class DNS implements DNSInterface {
       try {
         const result = await resolver(domain, {
           ...options,
+          logger: this.logger,
           types
         })
 
