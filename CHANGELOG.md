@@ -1,3 +1,13 @@
+## [1.0.14](https://github.com/multiformats/js-dns/compare/v1.0.13...v1.0.14) (2026-06-24)
+
+### Trivial Changes
+
+* bump aegir from 47.2.0 to 48.0.13 ([#33](https://github.com/multiformats/js-dns/issues/33)) ([d09eab7](https://github.com/multiformats/js-dns/commit/d09eab72c0df5483abd3291edc8b3b9952c2b44d))
+
+### Dependencies
+
+* bump uint8arrays from 5.1.1 to 6.1.1 ([#29](https://github.com/multiformats/js-dns/issues/29)) ([b6b580d](https://github.com/multiformats/js-dns/commit/b6b580db07597be2b69f8d9d3a3f1439ef36c1f0))
+
 ## [1.0.13](https://github.com/multiformats/js-dns/compare/v1.0.12...v1.0.13) (2026-01-20)
 
 ### Bug Fixes
