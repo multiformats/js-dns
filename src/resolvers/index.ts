@@ -1,8 +1,11 @@
-import type { DNSResponse, QueryOptions } from '../index.js'
+import type { DNSResponse, QueryOptions } from '../index.ts'
 
 export interface DNSResolver {
   (domain: string, options?: QueryOptions): Promise<DNSResponse>
 }
 
-export { dnsOverHttps } from './dns-over-https.js'
-export { dnsJsonOverHttps } from './dns-json-over-https.js'
+export type { DNSJSONOverHTTPSOptions } from './dns-json-over-https.ts'
+export type { DNSOverHTTPSOptions } from './dns-over-https.ts'
+
+export { dnsOverHttps } from './dns-over-https.ts'
+export { dnsJsonOverHttps } from './dns-json-over-https.ts'

@@ -1,9 +1,9 @@
 import { Resolver } from 'dns/promises'
-import { RecordType } from '../index.js'
-import { getTypes } from '../utils/get-types.js'
-import { toDNSResponse } from '../utils/to-dns-response.js'
-import type { DNSResolver } from './index.js'
-import type { Answer } from '../index.js'
+import { RecordType } from '../index.ts'
+import { getTypes } from '../utils/get-types.ts'
+import { toDNSResponse } from '../utils/to-dns-response.ts'
+import type { DNSResolver } from './index.ts'
+import type { Answer } from '../index.ts'
 
 const nodeResolver: DNSResolver = async (fqdn, options = {}) => {
   const resolver = new Resolver()

@@ -1,6 +1,6 @@
 import { expect } from 'aegir/chai'
-import { RecordType } from '../../src/index.js'
-import { dnsOverHttps } from '../../src/resolvers/dns-over-https.js'
+import { RecordType } from '../../src/index.ts'
+import { dnsOverHttps } from '../../src/resolvers/dns-over-https.ts'
 
 describe('dns-over-https', () => {
   it('should query dns', async () => {

@@ -1,11 +1,11 @@
 import { CustomProgressEvent } from 'progress-events'
 import { DNSQueryFailedError } from './errors.ts'
-import { defaultResolver } from './resolvers/default.js'
-import { cache } from './utils/cache.js'
-import { getTypes } from './utils/get-types.js'
-import type { DNS as DNSInterface, DNSInit, DNSResponse, QueryOptions } from './index.js'
-import type { DNSResolver } from './resolvers/index.js'
-import type { AnswerCache } from './utils/cache.js'
+import { defaultResolver } from './resolvers/default.ts'
+import { cache } from './utils/cache.ts'
+import { getTypes } from './utils/get-types.ts'
+import type { DNS as DNSInterface, DNSInit, DNSResponse, QueryOptions } from './index.ts'
+import type { DNSResolver } from './resolvers/index.ts'
+import type { AnswerCache } from './utils/cache.ts'
 import type { ComponentLogger } from '@libp2p/interface'
 
 const DEFAULT_ANSWER_CACHE_SIZE = 1000

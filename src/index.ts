@@ -80,8 +80,8 @@
  * ```
  */
 
-import { DNS as DNSClass } from './dns.js'
-import type { DNSResolver } from './resolvers/index.js'
+import { DNS as DNSClass } from './dns.ts'
+import type { DNSResolver } from './resolvers/index.ts'
 import type { ComponentLogger } from '@libp2p/interface'
 import type { ProgressEvent, ProgressOptions } from 'progress-events'
 

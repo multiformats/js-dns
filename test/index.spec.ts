@@ -1,7 +1,7 @@
 import { expect } from 'aegir/chai'
 import Sinon from 'sinon'
-import { RecordType, dns } from '../src/index.js'
-import type { Answer } from '../src/index.js'
+import { RecordType, dns } from '../src/index.ts'
+import type { Answer } from '../src/index.ts'
 
 describe('dns', () => {
   it('should query dns', async () => {
