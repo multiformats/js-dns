@@ -1,7 +1,7 @@
 import hashlru from 'hashlru'
-import { RecordType } from '../index.js'
-import { DEFAULT_TTL, toDNSResponse } from './to-dns-response.js'
-import type { Answer, DNSResponse } from '../index.js'
+import { RecordType } from '../index.ts'
+import { DEFAULT_TTL, toDNSResponse } from './to-dns-response.ts'
+import type { Answer, DNSResponse } from '../index.ts'
 
 interface CachedAnswer {
   expires: number

@@ -42,11 +42,13 @@
   "exports": {
     ".": {
       "types": "./dist/src/index.d.ts",
-      "import": "./dist/src/index.js"
+      "import": "./dist/src/index.js",
+      "module-sync": "./dist/src/index.js"
     },
     "./resolvers": {
       "types": "./dist/src/resolvers/index.d.ts",
-      "import": "./dist/src/resolvers/index.js"
+      "import": "./dist/src/resolvers/index.js",
+      "module-sync": "./dist/src/resolvers/index.js"
     }
   },
   "release": {
@@ -168,7 +170,7 @@
   "devDependencies": {
     "@types/dns-packet": "^5.6.5",
     "@types/sinon": "^21.0.0",
-    "aegir": "^47.0.21",
+    "aegir": "^48.0.13",
     "sinon": "^21.0.0"
   },
   "browser": {

@@ -1,10 +1,10 @@
 import PQueue from 'p-queue'
 import { CustomProgressEvent } from 'progress-events'
-import { RecordType } from '../index.js'
-import { getTypes } from '../utils/get-types.js'
-import { toDNSResponse } from '../utils/to-dns-response.js'
-import type { DNSResponse } from '../index.js'
-import type { DNSResolver } from './index.js'
+import { RecordType } from '../index.ts'
+import { getTypes } from '../utils/get-types.ts'
+import { toDNSResponse } from '../utils/to-dns-response.ts'
+import type { DNSResponse } from '../index.ts'
+import type { DNSResolver } from './index.ts'
 
 /**
  * Browsers limit concurrent connections per host (~6), we don't want to exhaust
