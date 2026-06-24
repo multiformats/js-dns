@@ -1,6 +1,6 @@
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
-import { RecordType } from '../index.js'
-import type { DNSResponse } from '../index.js'
+import { RecordType } from '../index.ts'
+import type { DNSResponse } from '../index.ts'
 
 /**
  * This TTL will be used if the remote service does not return one

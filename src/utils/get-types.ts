@@ -1,4 +1,4 @@
-import { RecordType } from '../index.js'
+import { RecordType } from '../index.ts'
 
 export function getTypes (types?: RecordType | RecordType[]): RecordType[] {
   const DEFAULT_TYPES = [
