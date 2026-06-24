@@ -4,5 +4,8 @@ export interface DNSResolver {
   (domain: string, options?: QueryOptions): Promise<DNSResponse>
 }
 
+export type { DNSJSONOverHTTPSOptions } from './dns-json-over-https.ts'
+export type { DNSOverHTTPSOptions } from './dns-over-https.ts'
+
 export { dnsOverHttps } from './dns-over-https.ts'
 export { dnsJsonOverHttps } from './dns-json-over-https.ts'
