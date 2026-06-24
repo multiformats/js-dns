@@ -2,3 +2,8 @@ export class DNSQueryFailedError extends AggregateError {
   static name = 'DNSQueryFailedError'
   name = 'DNSQueryFailedError'
 }
+
+export class EmptyDNSAnswerError extends AggregateError {
+  static name = 'EmptyDNSAnswerError'
+  name = 'EmptyDNSAnswerError'
+}

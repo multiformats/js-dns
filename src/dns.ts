@@ -1,24 +1,27 @@
 import { CustomProgressEvent } from 'progress-events'
-import { DNSQueryFailedError } from './errors.ts'
+import { DNSQueryFailedError, EmptyDNSAnswerError } from './errors.ts'
 import { defaultResolver } from './resolvers/default.ts'
 import { cache } from './utils/cache.ts'
 import { getTypes } from './utils/get-types.ts'
-import type { DNS as DNSInterface, DNSInit, DNSResponse, QueryOptions } from './index.ts'
+import type { DNS as DNSInterface, DNSInit, DNSResponse, QueryOptions, DNSResolverSorter } from './index.ts'
 import type { DNSResolver } from './resolvers/index.ts'
 import type { AnswerCache } from './utils/cache.ts'
 import type { ComponentLogger } from '@libp2p/interface'
 
 const DEFAULT_ANSWER_CACHE_SIZE = 1000
+const RANDOM: DNSResolverSorter = () => (Math.random() > 0.5) ? -1 : 1
 
 export class DNS implements DNSInterface {
   private readonly resolvers: Record<string, DNSResolver[]>
   private readonly cache: AnswerCache
   private readonly logger?: ComponentLogger
+  private readonly sorter: DNSResolverSorter
 
   constructor (init: DNSInit) {
     this.resolvers = {}
     this.cache = cache(init.cacheSize ?? DEFAULT_ANSWER_CACHE_SIZE)
     this.logger = init.logger
+    this.sorter = init.sorter ?? RANDOM
 
     Object.entries(init.resolvers ?? {}).forEach(([tld, resolver]) => {
       if (!Array.isArray(resolver)) {
@@ -58,9 +61,7 @@ export class DNS implements DNSInterface {
     }
 
     const tld = `${domain.split('.').pop()}.`
-    const resolvers = (this.resolvers[tld] ?? this.resolvers['.']).sort(() => {
-      return (Math.random() > 0.5) ? -1 : 1
-    })
+    const resolvers = (this.resolvers[tld] ?? this.resolvers['.']).sort(this.sorter)
 
     const errors: Error[] = []
 
@@ -76,6 +77,10 @@ export class DNS implements DNSInterface {
           logger: this.logger,
           types
         })
+
+        if (result.Answer.length === 0) {
+          throw new EmptyDNSAnswerError('Query result had no answers')
+        }
 
         for (const answer of result.Answer) {
           this.cache.add(domain, answer)

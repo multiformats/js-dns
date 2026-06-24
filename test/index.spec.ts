@@ -238,4 +238,43 @@ describe('dns', () => {
     // only one resolver should have been called
     expect(resolvers.reduce((acc, curr) => acc + curr.callCount, 0)).to.equal(1)
   })
+
+  it('should return result when some resolvers fail and some succeed', async () => {
+    const goodResolver = Sinon.stub()
+    const badResolver = Sinon.stub()
+    const reallyBadResolver = Sinon.stub()
+
+    const answer = {
+      name: 'example.com',
+      data: '123.123.123.123',
+      type: RecordType.A
+    }
+
+    goodResolver.withArgs('example.com').resolves({
+      Answer: [answer]
+    })
+
+    badResolver.withArgs('example.com').resolves({
+      Answer: []
+    })
+
+    reallyBadResolver.withArgs('example.com').rejects(new Error('Urk!'))
+
+    const resolver = dns({
+      resolvers: {
+        '.': [
+          badResolver,
+          reallyBadResolver,
+          goodResolver
+        ]
+      },
+      sorter: () => 0
+    })
+    const result = await resolver.query('example.com')
+
+    expect(result).to.have.nested.property('Answer[0].data', answer.data)
+    expect(badResolver.called).to.be.true('Bad resolver was not invoked')
+    expect(reallyBadResolver.called).to.be.true('Really bad resolver was not invoked')
+    expect(goodResolver.called).to.be.true('Good resolver was not invoked')
+  })
 })
