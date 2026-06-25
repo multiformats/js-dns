@@ -1,3 +1,13 @@
+## [1.0.15](https://github.com/multiformats/js-dns/compare/v1.0.14...v1.0.15) (2026-06-25)
+
+### Bug Fixes
+
+* try other resovlers when answers are empty ([#34](https://github.com/multiformats/js-dns/issues/34)) ([747c5fe](https://github.com/multiformats/js-dns/commit/747c5fe727858618305d98b54c7edabf0e533447))
+
+### Trivial Changes
+
+* bump sinon from 21.1.2 to 22.0.0 ([#27](https://github.com/multiformats/js-dns/issues/27)) ([8f7132b](https://github.com/multiformats/js-dns/commit/8f7132b79159d5c95be14b84d7aca4a40b86cb7f))
+
 ## [1.0.14](https://github.com/multiformats/js-dns/compare/v1.0.13...v1.0.14) (2026-06-24)
 
 ### Trivial Changes
