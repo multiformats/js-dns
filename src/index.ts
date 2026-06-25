@@ -187,6 +187,10 @@ export interface DNSResponse {
  */
 export const MAX_RECURSIVE_DEPTH = 32
 
+export interface DNSResolverSorter {
+  (a: DNSResolver, b: DNSResolver): -1 | 0 | 1
+}
+
 export interface QueryOptions extends ProgressOptions<ResolveDnsProgressEvents> {
   signal?: AbortSignal
 
@@ -266,6 +270,13 @@ export interface DNSInit {
    * An optional logger
    */
   logger?: ComponentLogger
+
+  /**
+   * Sort resolvers before invoking them
+   *
+   * @default random
+   */
+  sorter?: DNSResolverSorter
 }
 
 export function dns (init: DNSInit = {}): DNS {
