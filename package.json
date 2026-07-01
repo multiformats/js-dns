@@ -169,7 +169,7 @@
   },
   "devDependencies": {
     "@types/dns-packet": "^5.6.5",
-    "@types/sinon": "^21.0.0",
+    "@types/sinon": "^22.0.0",
     "aegir": "^48.0.13",
     "sinon": "^22.0.0"
   },
